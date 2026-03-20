@@ -101,8 +101,7 @@ select {
 }
 
 .auth-panel,
-.stats-panel,
-.setup-panel {
+.stats-panel {
   display: grid;
   gap: 24px;
 }
@@ -284,12 +283,6 @@ select {
   color: #cffff0;
 }
 
-.setup-panel ol {
-  margin: 0;
-  padding-left: 1.2rem;
-  color: #d1ddef;
-  line-height: 1.7;
-}
 
 code {
   padding: 0.15rem 0.35rem;
