@@ -51,22 +51,25 @@ select {
 .panel-label,
 .helper-text,
 .status-pill,
-.total-badge span {
+.total-badge span,
+.month-name,
+.month-caption {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .eyebrow,
 .panel-label,
-.helper-text {
+.helper-text,
+.month-caption {
   color: var(--muted);
   font-size: 0.8rem;
 }
 
 .hero h1,
 .panel h2,
-#countDisplay,
-.total-badge strong {
+.total-badge strong,
+.month-days {
   margin: 0;
   font-family: var(--font-title);
   letter-spacing: 0.04em;
@@ -98,7 +101,6 @@ select {
 }
 
 .auth-panel,
-.counter-panel,
 .stats-panel,
 .setup-panel {
   display: grid;
@@ -141,8 +143,7 @@ select {
   gap: 16px;
 }
 
-.auth-actions,
-.action-row {
+.auth-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -185,25 +186,6 @@ select {
   color: var(--accent);
 }
 
-.counter-display {
-  display: grid;
-  justify-items: center;
-  gap: 8px;
-}
-
-#countDisplay {
-  font-size: clamp(5rem, 18vw, 8rem);
-  line-height: 1;
-}
-
-.counter-display small {
-  color: var(--muted);
-}
-
-.action-row {
-  justify-content: center;
-}
-
 .btn {
   border: 0;
   border-radius: 999px;
@@ -216,7 +198,8 @@ select {
   transform: translateY(-1px);
 }
 
-.btn:disabled {
+.btn:disabled,
+.month-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -227,16 +210,10 @@ select {
   box-shadow: 0 10px 25px rgba(81, 216, 138, 0.24);
 }
 
-.btn-secondary,
-.btn-ghost {
+.btn-secondary {
   background: transparent;
   color: var(--text);
   border: 1px solid var(--border);
-}
-
-.btn-ghost {
-  color: var(--danger);
-  border-color: rgba(255, 138, 101, 0.4);
 }
 
 .stats-grid {
@@ -246,6 +223,8 @@ select {
 }
 
 .month-card {
+  display: grid;
+  gap: 16px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.02);
   border-radius: 16px;
@@ -257,21 +236,52 @@ select {
   background: rgba(81, 216, 138, 0.08);
 }
 
-.month-card .month-name {
+.month-card-top {
+  display: grid;
+  gap: 6px;
+}
+
+.month-name {
   color: var(--muted);
-  text-transform: uppercase;
   font-size: 0.74rem;
+  margin: 0;
 }
 
-.month-card .month-days {
-  font-family: var(--font-title);
-  font-size: 2rem;
-  margin: 8px 0 4px;
+.month-caption {
+  margin: 0;
+  font-size: 0.68rem;
 }
 
-.month-card .month-caption {
-  font-size: 0.82rem;
-  color: var(--muted);
+.month-days {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.month-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.month-btn {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  border-radius: 12px;
+  min-height: 42px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.month-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.month-btn--plus {
+  background: rgba(81, 216, 138, 0.18);
+  border-color: rgba(81, 216, 138, 0.35);
+  color: #cffff0;
 }
 
 .setup-panel ol {
@@ -301,7 +311,8 @@ code {
   }
 
   .status-panel,
-  .stats-grid {
+  .stats-grid,
+  .month-actions {
     grid-template-columns: 1fr;
   }
 

@@ -35,14 +35,9 @@ const elements = {
   syncStatus: document.getElementById('syncStatus'),
   yearLabel: document.getElementById('yearLabel'),
   docLabel: document.getElementById('docLabel'),
-  currentMonthLabel: document.getElementById('currentMonthLabel'),
-  countDisplay: document.getElementById('countDisplay'),
   totalValue: document.getElementById('totalValue'),
   statsTitle: document.getElementById('statsTitle'),
   statsGrid: document.getElementById('statsGrid'),
-  btnPlus: document.getElementById('btnPlus'),
-  btnMinus: document.getElementById('btnMinus'),
-  btnReset: document.getElementById('btnReset'),
   btnLogin: document.getElementById('btnLogin'),
   btnLogout: document.getElementById('btnLogout'),
   userAvatar: document.getElementById('userAvatar'),
@@ -128,11 +123,18 @@ async function bootstrap() {
 }
 
 function bindActions() {
-  elements.btnPlus.addEventListener('click', () => updateCurrentMonth(1));
-  elements.btnMinus.addEventListener('click', () => updateCurrentMonth(-1));
-  elements.btnReset.addEventListener('click', () => resetCurrentMonth());
   elements.btnLogin.addEventListener('click', () => loginWithGoogle());
   elements.btnLogout.addEventListener('click', () => logout());
+  elements.statsGrid.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-action][data-month]');
+    if (!button) {
+      return;
+    }
+
+    const monthIndex = Number(button.dataset.month);
+    const delta = Number(button.dataset.action);
+    updateMonth(monthIndex, delta);
+  });
 }
 
 async function loginWithGoogle() {
@@ -172,30 +174,13 @@ async function logout() {
   }
 }
 
-async function updateCurrentMonth(delta) {
-  if (isBusy || !canEdit()) {
+async function updateMonth(monthIndex, delta) {
+  if (isBusy || !canEdit() || Number.isNaN(monthIndex) || Number.isNaN(delta)) {
     return;
   }
 
-  const monthIndex = new Date().getMonth();
   const nextMonths = [...currentState.months];
   nextMonths[monthIndex] = Math.max(0, nextMonths[monthIndex] + delta);
-
-  await saveState({
-    ...currentState,
-    months: nextMonths,
-    updatedAt: new Date().toISOString()
-  });
-}
-
-async function resetCurrentMonth() {
-  if (isBusy || !canEdit()) {
-    return;
-  }
-
-  const monthIndex = new Date().getMonth();
-  const nextMonths = [...currentState.months];
-  nextMonths[monthIndex] = 0;
 
   await saveState({
     ...currentState,
@@ -224,23 +209,30 @@ async function saveState(nextState) {
 
 function render(state) {
   const today = new Date();
-  const monthIndex = today.getMonth();
+  const currentMonthIndex = today.getMonth();
   const total = state.months.reduce((sum, days) => sum + days, 0);
 
   elements.yearLabel.textContent = String(state.year);
   elements.statsTitle.textContent = `Répartition ${state.year}`;
-  elements.currentMonthLabel.textContent = MONTHS_FR[monthIndex];
-  elements.countDisplay.textContent = String(state.months[monthIndex]);
   elements.totalValue.textContent = String(total);
 
   elements.statsGrid.innerHTML = state.months
-    .map((days, index) => `
-      <article class="month-card ${index === monthIndex ? 'current' : ''}">
-        <p class="month-name">${MONTHS_FR[index]}</p>
-        <p class="month-days">${days}</p>
-        <p class="month-caption">${days > 1 ? 'jours enregistrés' : 'jour enregistré'}</p>
-      </article>
-    `)
+    .map((days, index) => {
+      const disabled = !canEdit() || isBusy;
+      return `
+        <article class="month-card ${index === currentMonthIndex ? 'current' : ''}">
+          <div class="month-card-top">
+            <p class="month-name">${MONTHS_FR[index]}</p>
+            <p class="month-caption">${index === currentMonthIndex ? 'Mois en cours' : 'Mois terminé'}</p>
+          </div>
+          <p class="month-days">${days}</p>
+          <div class="month-actions">
+            <button class="month-btn" type="button" data-month="${index}" data-action="-1" ${disabled ? 'disabled' : ''}>−</button>
+            <button class="month-btn month-btn--plus" type="button" data-month="${index}" data-action="1" ${disabled ? 'disabled' : ''}>+</button>
+          </div>
+        </article>
+      `;
+    })
     .join('');
 }
 
@@ -250,12 +242,9 @@ function setBusy(nextBusy) {
 }
 
 function setActionAvailability() {
-  const editable = canEdit() && !isBusy;
-  elements.btnPlus.disabled = !editable;
-  elements.btnMinus.disabled = !editable;
-  elements.btnReset.disabled = !editable;
   elements.btnLogin.disabled = !auth || Boolean(currentUser) || isBusy;
   elements.btnLogout.disabled = !auth || !currentUser || isBusy;
+  render(currentState);
 }
 
 function canEdit() {

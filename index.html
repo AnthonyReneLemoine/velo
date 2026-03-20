@@ -62,40 +62,20 @@
         </div>
       </section>
 
-      <section class="panel counter-panel">
-        <div class="panel-heading">
-          <div>
-            <p class="panel-label">Mois en cours</p>
-            <h2 id="currentMonthLabel">—</h2>
-          </div>
-          <div class="total-badge">
-            <span>Total</span>
-            <strong id="totalValue">0</strong>
-          </div>
-        </div>
-
-        <div class="counter-display">
-          <span id="countDisplay">0</span>
-          <small>jours à vélo</small>
-        </div>
-
-        <div class="action-row">
-          <button id="btnMinus" class="btn btn-secondary" type="button">−1</button>
-          <button id="btnReset" class="btn btn-ghost" type="button">Remettre ce mois à 0</button>
-          <button id="btnPlus" class="btn btn-primary" type="button">+1</button>
-        </div>
-      </section>
-
       <section class="panel stats-panel">
         <div class="panel-heading">
           <div>
             <p class="panel-label">Bilan annuel</p>
             <h2 id="statsTitle">Répartition mensuelle</h2>
           </div>
-          <p class="helper-text">
-            Les données sont chargées après connexion Google et sauvegardées dans Firestore.
-          </p>
+          <div class="total-badge">
+            <span>Total</span>
+            <strong id="totalValue">0</strong>
+          </div>
         </div>
+        <p class="helper-text">
+          Chaque case permet maintenant de corriger directement le nombre de jours d’un mois déjà terminé.
+        </p>
         <div id="statsGrid" class="stats-grid"></div>
       </section>
 
