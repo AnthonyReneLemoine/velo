@@ -106,11 +106,6 @@ select {
   gap: 24px;
 }
 
-.status-panel {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
 
 .panel-value {
   margin: 8px 0 0;
@@ -123,17 +118,6 @@ select {
   word-break: break-word;
 }
 
-.status-pill {
-  display: inline-flex;
-  margin-top: 8px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(81, 216, 138, 0.12);
-  color: #aaf0c5;
-  border: 1px solid rgba(81, 216, 138, 0.25);
-  font-size: 0.78rem;
-  font-weight: 700;
-}
 
 .panel-heading {
   display: flex;
@@ -291,7 +275,6 @@ code {
 }
 
 @media (max-width: 860px) {
-  .status-panel,
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -303,7 +286,6 @@ code {
     padding-top: 24px;
   }
 
-  .status-panel,
   .stats-grid,
   .month-actions {
     grid-template-columns: 1fr;

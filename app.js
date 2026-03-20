@@ -32,9 +32,6 @@ const MONTHS_FR = [
 
 const defaultState = createEmptyState(new Date().getFullYear());
 const elements = {
-  syncStatus: document.getElementById('syncStatus'),
-  yearLabel: document.getElementById('yearLabel'),
-  docLabel: document.getElementById('docLabel'),
   totalValue: document.getElementById('totalValue'),
   statsTitle: document.getElementById('statsTitle'),
   statsGrid: document.getElementById('statsGrid'),
@@ -63,8 +60,6 @@ async function bootstrap() {
   const firebaseReady = hasFirebaseConfig(appConfig?.firebase);
 
   if (!firebaseReady) {
-    elements.syncStatus.textContent = 'Mode local sans Firebase';
-    elements.docLabel.textContent = 'config.js incomplet';
     setActionAvailability();
     return;
   }
@@ -77,9 +72,6 @@ async function bootstrap() {
     const collectionName = appConfig.firestore?.collection || 'veloStats';
     const sharedDocumentId = appConfig.firestore?.documentId || 'default';
 
-    elements.docLabel.textContent = `${collectionName}/<uid ou ${sharedDocumentId}>`;
-    elements.syncStatus.textContent = 'En attente de connexion Google';
-
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
       setAuthenticatedUser(user);
@@ -88,7 +80,6 @@ async function bootstrap() {
       if (!user) {
         currentState = { ...defaultState };
         render(currentState);
-        elements.syncStatus.textContent = 'Connectez-vous avec Google';
         return;
       }
 
@@ -99,24 +90,18 @@ async function bootstrap() {
           appConfig.firestore?.perUser === false ? sharedDocumentId : user.uid
         );
 
-        elements.docLabel.textContent = docRef.path;
         persistence = createFirestorePersistence(docRef);
-        elements.syncStatus.textContent = 'Chargement depuis Firebase…';
         currentState = await persistence.load();
         render(currentState);
-        elements.syncStatus.textContent = 'Synchronisé avec Firebase';
       } catch (error) {
         console.error(error);
         currentState = { ...defaultState };
         render(currentState);
-        elements.syncStatus.textContent = 'Erreur Firestore, bascule locale';
         persistence = createMemoryPersistence();
       }
     });
   } catch (error) {
     console.error(error);
-    elements.syncStatus.textContent = 'Erreur Firebase, mode local';
-    elements.docLabel.textContent = error.message;
     persistence = createMemoryPersistence();
     setActionAvailability();
   }
@@ -143,13 +128,11 @@ async function loginWithGoogle() {
   }
 
   setBusy(true);
-  elements.syncStatus.textContent = 'Ouverture de la connexion Google…';
 
   try {
     await signInWithPopup(auth, provider);
   } catch (error) {
     console.error(error);
-    elements.syncStatus.textContent = 'Connexion Google refusée ou impossible';
   } finally {
     setBusy(false);
     setActionAvailability();
@@ -167,7 +150,6 @@ async function logout() {
     await signOut(auth);
   } catch (error) {
     console.error(error);
-    elements.syncStatus.textContent = 'Échec de déconnexion';
   } finally {
     setBusy(false);
     setActionAvailability();
@@ -195,12 +177,8 @@ async function saveState(nextState) {
   try {
     currentState = await persistence.save(normalizeState(nextState));
     render(currentState);
-    if (currentUser) {
-      elements.syncStatus.textContent = 'Synchronisé avec Firebase';
-    }
   } catch (error) {
     console.error(error);
-    elements.syncStatus.textContent = 'Échec de sauvegarde';
   } finally {
     setBusy(false);
     setActionAvailability();
@@ -212,7 +190,6 @@ function render(state) {
   const currentMonthIndex = today.getMonth();
   const total = state.months.reduce((sum, days) => sum + days, 0);
 
-  elements.yearLabel.textContent = String(state.year);
   elements.statsTitle.textContent = `Répartition ${state.year}`;
   elements.totalValue.textContent = String(total);
 
