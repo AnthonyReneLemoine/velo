@@ -1,0 +1,289 @@
+:root {
+  --bg: #07111f;
+  --surface: rgba(11, 22, 39, 0.9);
+  --surface-strong: #10233c;
+  --border: rgba(154, 178, 214, 0.18);
+  --text: #e8f0fb;
+  --muted: #9db0cb;
+  --accent: #51d88a;
+  --accent-strong: #21bf73;
+  --danger: #ff8a65;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+  --radius: 20px;
+  --font-title: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text);
+  background:
+    radial-gradient(circle at top, rgba(81, 216, 138, 0.18), transparent 30%),
+    linear-gradient(180deg, #06101d 0%, #0c1727 100%);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 40px 0 72px;
+}
+
+.hero {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.eyebrow,
+.panel-label,
+.helper-text,
+.status-pill,
+.total-badge span {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.eyebrow,
+.panel-label,
+.helper-text {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.hero h1,
+.panel h2,
+#countDisplay,
+.total-badge strong {
+  margin: 0;
+  font-family: var(--font-title);
+  letter-spacing: 0.04em;
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  color: var(--accent);
+}
+
+.hero-copy {
+  max-width: 70ch;
+  color: #c4d3e8;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.panel + .panel {
+  margin-top: 18px;
+}
+
+.status-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.panel-value {
+  margin: 8px 0 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.panel-value--small {
+  font-size: 0.92rem;
+  word-break: break-word;
+}
+
+.status-pill {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(81, 216, 138, 0.12);
+  color: #aaf0c5;
+  border: 1px solid rgba(81, 216, 138, 0.25);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.counter-panel,
+.stats-panel,
+.setup-panel {
+  display: grid;
+  gap: 24px;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.total-badge {
+  display: grid;
+  gap: 4px;
+  min-width: 120px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--surface-strong);
+  text-align: right;
+}
+
+.total-badge strong {
+  font-size: 2rem;
+  color: var(--accent);
+}
+
+.counter-display {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+#countDisplay {
+  font-size: clamp(5rem, 18vw, 8rem);
+  line-height: 1;
+}
+
+.counter-display small {
+  color: var(--muted);
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 14px 22px;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #072012;
+  box-shadow: 0 10px 25px rgba(81, 216, 138, 0.24);
+}
+
+.btn-secondary,
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost {
+  color: var(--danger);
+  border-color: rgba(255, 138, 101, 0.4);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.month-card {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.month-card.current {
+  border-color: rgba(81, 216, 138, 0.5);
+  background: rgba(81, 216, 138, 0.08);
+}
+
+.month-card .month-name {
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 0.74rem;
+}
+
+.month-card .month-days {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  margin: 8px 0 4px;
+}
+
+.month-card .month-caption {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.setup-panel ol {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #d1ddef;
+  line-height: 1.7;
+}
+
+code {
+  padding: 0.15rem 0.35rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 860px) {
+  .status-panel,
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: min(100%, calc(100% - 24px));
+    padding-top: 24px;
+  }
+
+  .status-panel,
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-heading {
+    flex-direction: column;
+  }
+
+  .total-badge {
+    width: 100%;
+    text-align: left;
+  }
+}

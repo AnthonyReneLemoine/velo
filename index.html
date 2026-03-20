@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vélo Tracker</title>
+    <meta
+      name="description"
+      content="Suivi des trajets à vélo au travail, déployable sur GitHub Pages avec Firebase."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <p class="eyebrow">GitHub Pages + Firebase</p>
+        <h1>🚲 Vélo Tracker</h1>
+        <p class="hero-copy">
+          Une application statique pour suivre les jours à vélo au boulot, avec synchronisation
+          Firebase Firestore et déploiement automatique sur GitHub Pages.
+        </p>
+      </header>
+
+      <section class="panel status-panel">
+        <div>
+          <p class="panel-label">Statut</p>
+          <p id="syncStatus" class="status-pill">Initialisation…</p>
+        </div>
+        <div>
+          <p class="panel-label">Année suivie</p>
+          <p id="yearLabel" class="panel-value">—</p>
+        </div>
+        <div>
+          <p class="panel-label">Document Firebase</p>
+          <p id="docLabel" class="panel-value panel-value--small">—</p>
+        </div>
+      </section>
+
+      <section class="panel counter-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="panel-label">Mois en cours</p>
+            <h2 id="currentMonthLabel">—</h2>
+          </div>
+          <div class="total-badge">
+            <span>Total</span>
+            <strong id="totalValue">0</strong>
+          </div>
+        </div>
+
+        <div class="counter-display">
+          <span id="countDisplay">0</span>
+          <small>jours à vélo</small>
+        </div>
+
+        <div class="action-row">
+          <button id="btnMinus" class="btn btn-secondary" type="button">−1</button>
+          <button id="btnReset" class="btn btn-ghost" type="button">Remettre ce mois à 0</button>
+          <button id="btnPlus" class="btn btn-primary" type="button">+1</button>
+        </div>
+      </section>
+
+      <section class="panel stats-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="panel-label">Bilan annuel</p>
+            <h2 id="statsTitle">Répartition mensuelle</h2>
+          </div>
+          <p class="helper-text">Les données sont sauvegardées dans Firestore quand la configuration est fournie.</p>
+        </div>
+        <div id="statsGrid" class="stats-grid"></div>
+      </section>
+
+      <section class="panel setup-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="panel-label">Mise en place</p>
+            <h2>Configuration rapide</h2>
+          </div>
+        </div>
+        <ol>
+          <li>Créer un projet Firebase et activer <strong>Authentication / Anonyme</strong> et <strong>Firestore</strong>.</li>
+          <li>Remplir <code>config.js</code> avec la configuration web Firebase et le chemin du document.</li>
+          <li>Activer GitHub Pages sur la branche GitHub Actions : le workflow publiera l’application.</li>
+        </ol>
+      </section>
+    </main>
+
+    <script src="./config.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
