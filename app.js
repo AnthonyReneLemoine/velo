@@ -30,13 +30,16 @@ const MONTHS_FR = [
   'Décembre'
 ];
 
-const defaultState = createEmptyState(new Date().getFullYear());
+const CURRENT_CALENDAR_YEAR = new Date().getFullYear();
+const defaultState = createAppState(CURRENT_CALENDAR_YEAR);
 const elements = {
   totalValue: document.getElementById('totalValue'),
   statsTitle: document.getElementById('statsTitle'),
   statsGrid: document.getElementById('statsGrid'),
   btnLogin: document.getElementById('btnLogin'),
   btnLogout: document.getElementById('btnLogout'),
+  btnPrevYear: document.getElementById('btnPrevYear'),
+  btnNextYear: document.getElementById('btnNextYear'),
   userAvatar: document.getElementById('userAvatar'),
   userName: document.getElementById('userName'),
   userEmail: document.getElementById('userEmail')
@@ -110,6 +113,8 @@ async function bootstrap() {
 function bindActions() {
   elements.btnLogin.addEventListener('click', () => loginWithGoogle());
   elements.btnLogout.addEventListener('click', () => logout());
+  elements.btnPrevYear.addEventListener('click', () => changeYear(-1));
+  elements.btnNextYear.addEventListener('click', () => changeYear(1));
   elements.statsGrid.addEventListener('click', (event) => {
     const button = event.target.closest('[data-action][data-month]');
     if (!button) {
@@ -156,19 +161,32 @@ async function logout() {
   }
 }
 
+function changeYear(delta) {
+  if (isBusy || Number.isNaN(delta)) {
+    return;
+  }
+
+  const nextYear = currentState.selectedYear + delta;
+  currentState = normalizeState({
+    ...currentState,
+    selectedYear: nextYear
+  });
+  render(currentState);
+}
+
 async function updateMonth(monthIndex, delta) {
   if (isBusy || !canEdit() || Number.isNaN(monthIndex) || Number.isNaN(delta)) {
     return;
   }
 
-  const nextMonths = [...currentState.months];
+  const nextState = normalizeState(currentState);
+  const yearKey = String(nextState.selectedYear);
+  const nextMonths = [...nextState.years[yearKey]];
   nextMonths[monthIndex] = Math.max(0, nextMonths[monthIndex] + delta);
+  nextState.years[yearKey] = nextMonths;
+  nextState.updatedAt = new Date().toISOString();
 
-  await saveState({
-    ...currentState,
-    months: nextMonths,
-    updatedAt: new Date().toISOString()
-  });
+  await saveState(nextState);
 }
 
 async function saveState(nextState) {
@@ -188,24 +206,27 @@ async function saveState(nextState) {
 function render(state) {
   const today = new Date();
   const currentMonthIndex = today.getMonth();
-  const total = state.months.reduce((sum, days) => sum + days, 0);
+  const selectedYear = state.selectedYear;
+  const selectedMonths = getYearMonths(state, selectedYear);
+  const total = selectedMonths.reduce((sum, days) => sum + days, 0);
 
-  elements.statsTitle.textContent = `Répartition ${state.year}`;
+  elements.statsTitle.textContent = `Répartition ${selectedYear}`;
   elements.totalValue.textContent = String(total);
 
-  elements.statsGrid.innerHTML = state.months
+  elements.statsGrid.innerHTML = selectedMonths
     .map((days, index) => {
       const disabled = !canEdit() || isBusy;
+      const isCurrentMonth = selectedYear === CURRENT_CALENDAR_YEAR && index === currentMonthIndex;
       return `
-        <article class="month-card ${index === currentMonthIndex ? 'current' : ''}">
+        <article class="month-card ${isCurrentMonth ? 'current' : ''}">
           <div class="month-card-top">
             <p class="month-name">${MONTHS_FR[index]}</p>
-            <p class="month-caption">${index === currentMonthIndex ? 'Mois en cours' : 'Mois terminé'}</p>
+            <p class="month-caption">${isCurrentMonth ? 'Mois en cours' : `Année ${selectedYear}`}</p>
           </div>
           <p class="month-days">${days}</p>
           <div class="month-actions">
-            <button class="month-btn" type="button" data-month="${index}" data-action="-1" ${disabled ? 'disabled' : ''}>−</button>
-            <button class="month-btn month-btn--plus" type="button" data-month="${index}" data-action="1" ${disabled ? 'disabled' : ''}>+</button>
+            <button class="month-btn" type="button" aria-label="Retirer un jour pour ${MONTHS_FR[index]} ${selectedYear}" data-month="${index}" data-action="-1" ${disabled ? 'disabled' : ''}>−</button>
+            <button class="month-btn month-btn--plus" type="button" aria-label="Ajouter un jour pour ${MONTHS_FR[index]} ${selectedYear}" data-month="${index}" data-action="1" ${disabled ? 'disabled' : ''}>+</button>
           </div>
         </article>
       `;
@@ -221,6 +242,8 @@ function setBusy(nextBusy) {
 function setActionAvailability() {
   elements.btnLogin.disabled = !auth || Boolean(currentUser) || isBusy;
   elements.btnLogout.disabled = !auth || !currentUser || isBusy;
+  elements.btnPrevYear.disabled = isBusy;
+  elements.btnNextYear.disabled = isBusy;
   render(currentState);
 }
 
@@ -262,20 +285,51 @@ function hasFirebaseConfig(firebaseConfig) {
 }
 
 function normalizeState(state) {
-  const normalized = createEmptyState(state.year || new Date().getFullYear());
-  normalized.months = Array.isArray(state.months)
-    ? normalized.months.map((_, index) => Math.max(0, Number(state.months[index] || 0)))
-    : normalized.months;
-  normalized.updatedAt = state.updatedAt || null;
-  return normalized;
+  const legacyYear = Number(state?.year) || CURRENT_CALENDAR_YEAR;
+  const base = createAppState(Number(state?.selectedYear) || legacyYear);
+
+  if (state?.years && typeof state.years === 'object') {
+    for (const [yearKey, months] of Object.entries(state.years)) {
+      base.years[yearKey] = normalizeMonths(months);
+    }
+  }
+
+  if (Array.isArray(state?.months)) {
+    base.years[String(legacyYear)] = normalizeMonths(state.months);
+  }
+
+  base.selectedYear = Number(state?.selectedYear) || legacyYear;
+  base.updatedAt = state?.updatedAt || null;
+
+  const selectedKey = String(base.selectedYear);
+  if (!base.years[selectedKey]) {
+    base.years[selectedKey] = createEmptyMonths();
+  }
+
+  return base;
 }
 
-function createEmptyState(year) {
+function createAppState(selectedYear) {
+  const year = Number(selectedYear) || CURRENT_CALENDAR_YEAR;
   return {
-    year,
-    months: Array.from({ length: 12 }, () => 0),
+    selectedYear: year,
+    years: {
+      [String(year)]: createEmptyMonths()
+    },
     updatedAt: null
   };
+}
+
+function createEmptyMonths() {
+  return Array.from({ length: 12 }, () => 0);
+}
+
+function normalizeMonths(months) {
+  return createEmptyMonths().map((_, index) => Math.max(0, Number(months?.[index] || 0)));
+}
+
+function getYearMonths(state, year) {
+  return state.years[String(year)] || createEmptyMonths();
 }
 
 function createMemoryPersistence() {
@@ -308,8 +362,8 @@ function createFirestorePersistence(docRef) {
     async save(nextState) {
       const normalized = normalizeState(nextState);
       await updateDoc(docRef, {
-        year: normalized.year,
-        months: normalized.months,
+        selectedYear: normalized.selectedYear,
+        years: normalized.years,
         updatedAt: serverTimestamp()
       });
       return normalized;

@@ -46,7 +46,11 @@
         <div class="panel-heading">
           <div>
             <p class="panel-label">Bilan annuel</p>
-            <h2 id="statsTitle">Répartition mensuelle</h2>
+            <div class="year-toolbar">
+              <button id="btnPrevYear" class="year-btn" type="button" aria-label="Année précédente">←</button>
+              <h2 id="statsTitle">Répartition mensuelle</h2>
+              <button id="btnNextYear" class="year-btn" type="button" aria-label="Année suivante">→</button>
+            </div>
           </div>
           <div class="total-badge">
             <span>Total</span>
@@ -54,7 +58,7 @@
           </div>
         </div>
         <p class="helper-text">
-          Chaque case permet maintenant de corriger directement le nombre de jours d’un mois déjà terminé.
+          Chaque case permet maintenant de corriger directement le nombre de jours d’un mois, y compris sur les années précédentes.
         </p>
         <div id="statsGrid" class="stats-grid"></div>
       </section>
