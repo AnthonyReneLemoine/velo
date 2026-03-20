@@ -97,6 +97,14 @@ select {
   margin-top: 18px;
 }
 
+.auth-panel,
+.counter-panel,
+.stats-panel,
+.setup-panel {
+  display: grid;
+  gap: 24px;
+}
+
 .status-panel {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -126,18 +134,40 @@ select {
   font-weight: 700;
 }
 
-.counter-panel,
-.stats-panel,
-.setup-panel {
-  display: grid;
-  gap: 24px;
-}
-
 .panel-heading {
   display: flex;
   align-items: start;
   justify-content: space-between;
   gap: 16px;
+}
+
+.auth-actions,
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #67b9ff);
+  color: #03131a;
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
 .total-badge {
@@ -171,9 +201,6 @@ select {
 }
 
 .action-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
   justify-content: center;
 }
 
@@ -278,8 +305,10 @@ code {
     grid-template-columns: 1fr;
   }
 
-  .panel-heading {
+  .panel-heading,
+  .user-card {
     flex-direction: column;
+    align-items: flex-start;
   }
 
   .total-badge {

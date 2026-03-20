@@ -6,7 +6,7 @@ Cette version du projet transforme le compteur Google Apps Script en application
 
 - `index.html` : interface utilisateur.
 - `styles.css` : styles de l’application.
-- `app.js` : logique front-end et synchronisation Firebase.
+- `app.js` : logique front-end, authentification Google et synchronisation Firebase.
 - `config.js` : configuration Firebase déjà renseignée pour le projet `velo-b57a2`.
 - `.github/workflows/deploy-pages.yml` : publication automatique sur GitHub Pages.
 - `firebase.json` / `firestore.rules` : configuration Firebase.
@@ -14,7 +14,7 @@ Cette version du projet transforme le compteur Google Apps Script en application
 
 ## Configuration Firebase déjà branchée
 
-Le dépôt est maintenant configuré pour l’application web Firebase suivante :
+Le dépôt est configuré pour l’application web Firebase suivante :
 
 - **Project ID** : `velo-b57a2`
 - **Auth domain** : `velo-b57a2.firebaseapp.com`
@@ -22,9 +22,11 @@ Le dépôt est maintenant configuré pour l’application web Firebase suivante 
 
 À faire côté console Firebase :
 
-1. Activer **Authentication > Anonymous**.
-2. Activer **Firestore Database**.
-3. Déployer les règles Firestore :
+1. Activer **Authentication > Google**.
+2. Ajouter le domaine GitHub Pages utilisé dans les domaines autorisés Firebase Auth si nécessaire.
+3. Activer **Firestore Database**.
+4. Les données sont stockées par utilisateur Google dans un document Firestore basé sur son `uid`.
+5. Déployer les règles Firestore :
 
 ```bash
 firebase deploy --only firestore:rules
@@ -38,4 +40,4 @@ firebase deploy --only firestore:rules
 
 ## Développement local
 
-Vous pouvez ouvrir `index.html` directement dans un navigateur moderne. L’application utilisera Firebase si le projet est correctement activé côté console ; sinon, elle basculera automatiquement sur le mode local de secours.
+Vous pouvez ouvrir `index.html` directement dans un navigateur moderne. L’application demandera une connexion Google quand Firebase est disponible ; sinon, elle basculera automatiquement sur le mode local de secours.

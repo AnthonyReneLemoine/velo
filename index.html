@@ -23,9 +23,29 @@
         <h1>🚲 Vélo Tracker</h1>
         <p class="hero-copy">
           Une application statique pour suivre les jours à vélo au boulot, avec synchronisation
-          Firebase Firestore et déploiement automatique sur GitHub Pages.
+          Firebase Firestore, connexion Google et déploiement automatique sur GitHub Pages.
         </p>
       </header>
+
+      <section class="panel auth-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="panel-label">Authentification</p>
+            <h2>Connexion Google</h2>
+          </div>
+          <div class="auth-actions">
+            <button id="btnLogin" class="btn btn-primary" type="button">Se connecter avec Google</button>
+            <button id="btnLogout" class="btn btn-secondary" type="button">Se déconnecter</button>
+          </div>
+        </div>
+        <div class="user-card">
+          <div class="avatar" id="userAvatar" aria-hidden="true">?</div>
+          <div>
+            <p id="userName" class="panel-value">Non connecté</p>
+            <p id="userEmail" class="helper-text">Connectez-vous pour synchroniser vos données.</p>
+          </div>
+        </div>
+      </section>
 
       <section class="panel status-panel">
         <div>
@@ -72,7 +92,9 @@
             <p class="panel-label">Bilan annuel</p>
             <h2 id="statsTitle">Répartition mensuelle</h2>
           </div>
-          <p class="helper-text">Les données sont sauvegardées dans Firestore quand la configuration est fournie.</p>
+          <p class="helper-text">
+            Les données sont chargées après connexion Google et sauvegardées dans Firestore.
+          </p>
         </div>
         <div id="statsGrid" class="stats-grid"></div>
       </section>
@@ -85,8 +107,8 @@
           </div>
         </div>
         <ol>
-          <li>Créer un projet Firebase et activer <strong>Authentication / Anonyme</strong> et <strong>Firestore</strong>.</li>
-          <li>Remplir <code>config.js</code> avec la configuration web Firebase et le chemin du document.</li>
+          <li>Créer un projet Firebase et activer <strong>Authentication / Google</strong> ainsi que <strong>Firestore</strong>.</li>
+          <li>Vérifier que <code>config.js</code> pointe bien vers le bon projet Firebase.</li>
           <li>Activer GitHub Pages sur la branche GitHub Actions : le workflow publiera l’application.</li>
         </ol>
       </section>
