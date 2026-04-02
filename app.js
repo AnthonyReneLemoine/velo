@@ -5,7 +5,8 @@ import {
   getDoc,
   setDoc,
   updateDoc,
-  serverTimestamp
+  serverTimestamp,
+  deleteField
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import {
   getAuth,
@@ -288,14 +289,14 @@ function normalizeState(state) {
   const legacyYear = Number(state?.year) || CURRENT_CALENDAR_YEAR;
   const base = createAppState(Number(state?.selectedYear) || legacyYear);
 
+  if (Array.isArray(state?.months)) {
+    base.years[String(legacyYear)] = normalizeMonths(state.months);
+  }
+
   if (state?.years && typeof state.years === 'object') {
     for (const [yearKey, months] of Object.entries(state.years)) {
       base.years[yearKey] = normalizeMonths(months);
     }
-  }
-
-  if (Array.isArray(state?.months)) {
-    base.years[String(legacyYear)] = normalizeMonths(state.months);
   }
 
   base.selectedYear = Number(state?.selectedYear) || legacyYear;
@@ -364,7 +365,9 @@ function createFirestorePersistence(docRef) {
       await updateDoc(docRef, {
         selectedYear: normalized.selectedYear,
         years: normalized.years,
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
+        year: deleteField(),
+        months: deleteField()
       });
       return normalized;
     }
