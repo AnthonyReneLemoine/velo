@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vélo Tracker</title>
+    <meta
+      name="description"
+      content="Suivi des trajets à vélo au travail, déployable sur GitHub Pages avec Firebase."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <h1>🚲 Vélo Tracker</h1>
+      </header>
+
+      <section class="panel auth-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="panel-label">Authentification</p>
+            <h2>Connexion Google</h2>
+          </div>
+          <div class="auth-actions">
+            <button id="btnLogin" class="btn btn-primary" type="button">Se connecter avec Google</button>
+            <button id="btnLogout" class="btn btn-secondary" type="button">Se déconnecter</button>
+          </div>
+        </div>
+        <div class="user-card">
+          <div class="avatar" id="userAvatar" aria-hidden="true">?</div>
+          <div>
+            <p id="userName" class="panel-value">Non connecté</p>
+            <p id="userEmail" class="helper-text">Connectez-vous pour synchroniser vos données.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel stats-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="panel-label">Bilan annuel</p>
+            <div class="year-toolbar">
+              <button id="btnPrevYear" class="year-btn" type="button" aria-label="Année précédente">←</button>
+              <h2 id="statsTitle">Répartition mensuelle</h2>
+              <button id="btnNextYear" class="year-btn" type="button" aria-label="Année suivante">→</button>
+            </div>
+          </div>
+          <div class="total-badge">
+            <span>Total</span>
+            <strong id="totalValue">0</strong>
+          </div>
+        </div>
+        <p class="helper-text">
+          Chaque case permet maintenant de corriger directement le nombre de jours d’un mois, y compris sur les années précédentes.
+        </p>
+        <div id="statsGrid" class="stats-grid"></div>
+      </section>
+    </main>
+
+    <script src="./config.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
